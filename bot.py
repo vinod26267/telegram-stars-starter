@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import os
+from aiohttp import web
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command
@@ -11,6 +12,7 @@ logging.basicConfig(level=logging.INFO)
 
 BOT_TOKEN = os.environ["BOT_TOKEN"]
 VIP_STARS = int(os.getenv("VIP_STARS", "50"))
+PORT = int(os.getenv("PORT", "10000"))
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
@@ -74,7 +76,21 @@ async def payment_success(message: Message) -> None:
     await message.answer("Payment received! Your VIP access is now active.")
 
 
+async def health_handler(request: web.Request) -> web.Response:
+    return web.Response(text="OK")
+
+
+async def start_web_server() -> None:
+    app = web.Application()
+    app.router.add_get("/", health_handler)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", PORT)
+    await site.start()
+
+
 async def main() -> None:
+    await start_web_server()
     await dp.start_polling(bot)
 
 
