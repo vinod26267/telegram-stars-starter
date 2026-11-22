@@ -11,7 +11,7 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
 BOT_TOKEN = os.environ["BOT_TOKEN"]
-VIP_STARS = int(os.getenv("VIP_STARS", "50"))
+VIP_STARS = int(os.getenv("VIP_STARS", "100"))
 PORT = int(os.getenv("PORT", "10000"))
 
 bot = Bot(token=BOT_TOKEN)
@@ -50,10 +50,10 @@ async def vip_cmd(message: Message) -> None:
         description="Unlock VIP features using Telegram Stars.",
         payload=f"vip_{message.from_user.id}",
         currency="XTR",
-        prices=[LabeledPrice(label="VIP Pass", amount=VIP_STARS)],
+        prices=[LabeledPrice(label="VIP Pass", amount=100)],
     )
     await message.answer(
-        f"Tap the link below to pay {VIP_STARS} Telegram Stars:\n{invoice_link}"
+        f"Tap the link below to pay 100 Telegram Stars:\n{invoice_link}"
     )
 
 
